@@ -10,7 +10,7 @@ class Stack
 
 public:
 	int *intarr;
-	int TOP = 0;
+	int TOP;
 
 	Stack();
 	Stack(int size);
@@ -24,6 +24,7 @@ public:
 
 Stack::Stack()
 {
+	TOP=0;
 	SIZE = 5;
 	intarr = new int[SIZE];
 	cout << "\n\n Stack initialized with space of 5 elements!";
@@ -90,7 +91,8 @@ public:
 	void setupPegs();
 	void viewPegs();
 	void moveDisks();
-	void T(int numOfDisks, Stack Start, Stack Aux, Stack End);
+	unsigned int numOfMoves();
+	void T(int numOfDisks, Stack *Start, Stack *Aux, Stack *End);
 };
 
 HanoiTowerSimulation::HanoiTowerSimulation()
@@ -132,6 +134,9 @@ void HanoiTowerSimulation::viewPegs()
 		else{ n = HanoiTowerSimulation::B.intarr[HanoiTowerSimulation::B.TOP - i]; }
 		if (HanoiTowerSimulation::C.TOP == 0) { o = 0; }
 		else { o = HanoiTowerSimulation::C.intarr[HanoiTowerSimulation::C.TOP - i]; }
+		if (A.TOP - i < 0) m=0;
+		if (B.TOP - i < 0) n=0;
+		if (C.TOP - i < 0) o=0;
 
 		cout << "\n\t|" << m << "\t|\t|" << n << "\t|\t|" << o << "\t|";
 		cout << "\n\t| \t|\t| \t|\t| \t|";
@@ -140,14 +145,14 @@ void HanoiTowerSimulation::viewPegs()
 	cout << "\n      -------------   -------------   -------------";
 }
 
-void HanoiTowerSimulation::T(int numOfDisks, Stack Start, Stack Aux, Stack End)
+void HanoiTowerSimulation::T(int numOfDisks, Stack *Start, Stack *Aux, Stack *End)
 {
 	if (numOfDisks == 1)
 	{
 		cout << endl;
 		cout << "\n Press enter for next move... ";
 		system("pause");
-		End.push(Start.pop());
+		End->push(Start->pop());
 		system("cls");
 		viewPegs();
 		return;
@@ -161,14 +166,23 @@ void HanoiTowerSimulation::T(int numOfDisks, Stack Start, Stack Aux, Stack End)
 void HanoiTowerSimulation::moveDisks()
 {
 	//algorithm of Tower of Hanoi minimum moves
-	T(NumOfDisks, A, B, C);	
+	T(NumOfDisks, &A, &B, &C);	
+}
+
+unsigned int HanoiTowerSimulation::numOfMoves()
+{
+	//to determine minimum number of moves this algo will take to solve the problem
+	return ((1<<NumOfDisks)-1);
 }
 
 int main()
 {
-	HanoiTowerSimulation sim;	//default 3 disks to move from A to C
+	HanoiTowerSimulation sim(4);	//default 3 disks to move from A to C
 	sim.setupPegs();
 	system("cls");
 	sim.viewPegs();
 	sim.moveDisks();
+	cout <<"\n\n\n *** Total number of moves : "<<sim.numOfMoves()<<endl<<endl;
+
+
 }
