@@ -10,7 +10,7 @@ class Stack
 
 public:
 	int *intarr;
-	int TOP = 0;
+	int TOP;
 
 	Stack();
 	Stack(int size);
@@ -24,6 +24,7 @@ public:
 
 Stack::Stack()
 {
+	TOP=0;
 	SIZE = 5;
 	intarr = new int[SIZE];
 	cout << "\n\n Stack initialized with space of 5 elements!";
@@ -90,7 +91,8 @@ public:
 	void setupPegs();
 	void viewPegs();
 	void moveDisks();
-	void T(int numOfDisks, Stack Start, Stack Aux, Stack End);
+	unsigned int numOfMoves();
+	void T(int numOfDisks, Stack *Start, Stack *Aux, Stack *End);
 };
 
 HanoiTowerSimulation::HanoiTowerSimulation()
@@ -123,31 +125,72 @@ void HanoiTowerSimulation::viewPegs()
 	cout << "\t| \t|\t| \t|\t| \t|";
 	cout << "\n\t| \t|\t| \t|\t| \t|";
 	cout << "\n\t| \t|\t| \t|\t| \t|";
-	int m,n,o;
-	for (int i = 1; i <= NumOfDisks; i++)
+	int m[3] = { 0, 0, 0 }, n[3] = { 0, 0, 0 }, o[3] = { 0, 0, 0 };
+	if (HanoiTowerSimulation::A.TOP == NumOfDisks)
 	{
-		if (HanoiTowerSimulation::A.TOP == 0) { m = 0; }
-		else { m = HanoiTowerSimulation::A.intarr[HanoiTowerSimulation::A.TOP - i]; }
-		if (HanoiTowerSimulation::B.TOP == 0) { n = 0; }
-		else{ n = HanoiTowerSimulation::B.intarr[HanoiTowerSimulation::B.TOP - i]; }
-		if (HanoiTowerSimulation::C.TOP == 0) { o = 0; }
-		else { o = HanoiTowerSimulation::C.intarr[HanoiTowerSimulation::C.TOP - i]; }
+		m[0] = HanoiTowerSimulation::A.intarr[HanoiTowerSimulation::A.TOP - 1]; m[1] = HanoiTowerSimulation::A.intarr[HanoiTowerSimulation::A.TOP - 2]; m[2] = HanoiTowerSimulation::A.intarr[HanoiTowerSimulation::A.TOP - 3];
+	
+	}
+	else if (HanoiTowerSimulation::A.TOP == NumOfDisks - 1)
+	{
+		m[0] = 0; m[1] = HanoiTowerSimulation::A.intarr[HanoiTowerSimulation::A.TOP - 1]; m[2] = HanoiTowerSimulation::A.intarr[HanoiTowerSimulation::A.TOP - 2];
+	
+	}
+	else if (HanoiTowerSimulation::A.TOP == NumOfDisks - 2)
+	{
+		m[0] =m[0]=0 ;  m[1] = 0; m[2] = HanoiTowerSimulation::A.intarr[HanoiTowerSimulation::A.TOP - 1];
+	}
 
-		cout << "\n\t|" << m << "\t|\t|" << n << "\t|\t|" << o << "\t|";
+	if (HanoiTowerSimulation::B.TOP == NumOfDisks)
+	{
+		n[0] = HanoiTowerSimulation::B.intarr[HanoiTowerSimulation::B.TOP - 1]; n[1] = HanoiTowerSimulation::B.intarr[HanoiTowerSimulation::B.TOP - 2]; n[2] = HanoiTowerSimulation::B.intarr[HanoiTowerSimulation::B.TOP - 3];
+	
+	}
+	else if (HanoiTowerSimulation::B.TOP == NumOfDisks - 1)
+	{
+		n[0] = 0; n[1] = HanoiTowerSimulation::B.intarr[HanoiTowerSimulation::B.TOP - 1]; n[2] = HanoiTowerSimulation::B.intarr[HanoiTowerSimulation::B.TOP - 2];
+	
+	}
+	else if (HanoiTowerSimulation::B.TOP == NumOfDisks - 2)
+	{
+		n[0] = 0; n[1] = 0; n[2] = HanoiTowerSimulation::B.intarr[HanoiTowerSimulation::B.TOP - 1];
+	
+	}
+
+	if (HanoiTowerSimulation::C.TOP == NumOfDisks)
+	{
+		o[0] = HanoiTowerSimulation::C.intarr[HanoiTowerSimulation::C.TOP - 1]; o[1] = HanoiTowerSimulation::C.intarr[HanoiTowerSimulation::C.TOP - 2]; o[2] = HanoiTowerSimulation::C.intarr[HanoiTowerSimulation::C.TOP - 3];
+	
+	}
+	else if (HanoiTowerSimulation::C.TOP == NumOfDisks - 1)
+	{
+		o[0] = 0; o[1] = HanoiTowerSimulation::C.intarr[HanoiTowerSimulation::C.TOP - 1]; o[2] = HanoiTowerSimulation::C.intarr[HanoiTowerSimulation::C.TOP - 2];
+	
+	}
+	else if (HanoiTowerSimulation::C.TOP == NumOfDisks - 2)
+	{
+		o[0] = 0; o[1] = 0; o[2] = HanoiTowerSimulation::C.intarr[HanoiTowerSimulation::C.TOP - 1];
+	
+	}
+	for (int i = 0; i < NumOfDisks; i++)
+	{
+		
+
+		cout << "\n\t|" << m[i] << "\t|\t|" << n[i] << "\t|\t|" << o[i] << "\t|";
 		cout << "\n\t| \t|\t| \t|\t| \t|";
 	}
 	cout << "\n      -------------   -------------   -------------";
 	cout << "\n      -------------   -------------   -------------";
 }
 
-void HanoiTowerSimulation::T(int numOfDisks, Stack Start, Stack Aux, Stack End)
+void HanoiTowerSimulation::T(int numOfDisks, Stack *Start, Stack *Aux, Stack *End)
 {
 	if (numOfDisks == 1)
 	{
 		cout << endl;
 		cout << "\n Press enter for next move... ";
 		system("pause");
-		End.push(Start.pop());
+		End->push(Start->pop());
 		system("cls");
 		viewPegs();
 		return;
@@ -161,14 +204,23 @@ void HanoiTowerSimulation::T(int numOfDisks, Stack Start, Stack Aux, Stack End)
 void HanoiTowerSimulation::moveDisks()
 {
 	//algorithm of Tower of Hanoi minimum moves
-	T(NumOfDisks, A, B, C);	
+	T(NumOfDisks, &A, &B, &C);	
+}
+
+unsigned int HanoiTowerSimulation::numOfMoves()
+{
+	//to determine minimum number of moves this algo will take to solve the problem
+	return ((1<<NumOfDisks)-1);
 }
 
 int main()
 {
-	HanoiTowerSimulation sim;	//default 3 disks to move from A to C
+	HanoiTowerSimulation sim(3);	//default 3 disks to move from A to C
 	sim.setupPegs();
 	system("cls");
 	sim.viewPegs();
 	sim.moveDisks();
+	cout <<"\n\n\n *** Total number of moves : "<<sim.numOfMoves()<<endl<<endl;
+
+
 }
